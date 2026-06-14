@@ -8,9 +8,14 @@
 </head>
 <body>
   <div class="container">
-    <h1>Snake</h1>
-    <div id="score">Score: 0</div>
-    <div id="best">Best: 0</div>
+    <div class="header-row">
+      <h1>Snake</h1>
+      <button id="themeToggle" class="theme-toggle" aria-pressed="false">Dark</button>
+    </div>
+    <div class="score-row">
+      <div id="score">Score: 0</div>
+      <div id="best">Best: 0</div>
+    </div>
     <canvas id="gameCanvas" width="300" height="300"></canvas>
     <div class="controls">
       <button id="startBtn">Start</button>
