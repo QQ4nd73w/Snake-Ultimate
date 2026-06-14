@@ -6,23 +6,50 @@
   <title>Snake</title>
   <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="game-page">
   <div class="container">
     <div class="header-row">
       <h1>Snake</h1>
-      <button id="themeToggle" class="theme-toggle" aria-pressed="false">Dark</button>
+      <div style="display:flex;gap:8px;align-items:center">
+        <button id="themeToggle" class="theme-toggle" aria-pressed="false">Dark</button>
+        <button id="muteBtn" class="theme-toggle" type="button">🔊</button>
+        <label for="difficultySelect" style="font-size:13px;margin-left:8px;color:var(--muted);">Level</label>
+        <select id="difficultySelect" aria-label="Difficulty" style="margin-left:6px;padding:6px 8px;border-radius:8px;border:1px solid rgba(0,0,0,0.06)">
+          <option value="easy">Easy</option>
+          <option value="normal">Normal</option>
+          <option value="hard">Hard</option>
+        </select>
+      </div>
     </div>
     <div class="score-row">
       <div id="score">Score: 0</div>
       <div id="best">Best: 0</div>
     </div>
+    <div id="buffs" class="buffs" aria-live="polite"></div>
     <canvas id="gameCanvas" width="300" height="300"></canvas>
     <div class="controls">
-      <button id="startBtn">Start</button>
-      <button id="pauseBtn">Pause</button>
-      <button id="restartBtn">Restart</button>
+      <button id="startBtn" type="button">Start</button>
+      <button id="pauseBtn" type="button">Pause</button>
+      <button id="restartBtn" type="button">Restart</button>
     </div>
     <p class="hint">Use arrow keys to control the snake.</p>
+  </div>
+  <!-- Main menu moved to separate page (menu.html) -->
+  <div id="pauseOverlay" class="pause hidden">Paused — press Space to resume</div>
+
+  <div id="gameOverModal" class="modal hidden" aria-hidden="true">
+    <div class="modal-content">
+      <h2>Game Over</h2>
+      <div id="finalScore">Score: 0</div>
+      <h3>Local Records</h3>
+      <table id="recordsTable">
+        <thead><tr><th>#</th><th>Score</th><th>Date</th></tr></thead>
+        <tbody></tbody>
+      </table>
+      <div class="modal-controls">
+        <button id="modalRestart" type="button">Restart</button>
+      </div>
+    </div>
   </div>
   <script src="script.js"></script>
 </body>

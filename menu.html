@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Snake — Menu</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="menu-page">
+  <div class="container menu-container">
+    <div class="menu-hero">
+      <div class="menu-logo">
+        <svg width="56" height="56" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <rect rx="12" width="64" height="64" fill="#0ea5a4" />
+          <path d="M18 36c4-6 12-6 16 0s12 6 16 0" stroke="#052f2f" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+          <circle cx="30" cy="26" r="3" fill="#052f2f" />
+          <circle cx="42" cy="26" r="3" fill="#052f2f" />
+        </svg>
+      </div>
+      <div class="menu-title">
+        <h1>Snake</h1>
+        <p class="menu-sub">Fast, polished snake with buffs and challenges</p>
+      </div>
+    </div>
+    <div class="menu-body">
+      <div style="margin-top:12px">
+        <label style="font-weight:700;display:block">Mode</label>
+        <select id="menuMode" style="width:100%;margin-top:6px;padding:8px;border-radius:8px">
+          <option value="classic">Classic (with buffs)</option>
+          <option value="nobuffs">No Buffs</option>
+          <option value="timed">Timed (60s)</option>
+        </select>
+      </div>
+      <div style="margin-top:12px">
+        <label style="font-weight:700;display:block">Difficulty</label>
+        <select id="menuDifficulty" style="width:100%;margin-top:6px;padding:8px;border-radius:8px">
+          <option value="easy">Easy</option>
+          <option value="normal">Normal</option>
+          <option value="hard">Hard</option>
+          <option value="insane">Insane</option>
+        </select>
+      </div>
+      <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:16px">
+        <button id="menuMute" type="button" class="theme-toggle" aria-pressed="false" title="Mute music">🔊</button>
+        <button id="menuStart" type="button" class="start-btn">Start</button>
+      </div>
+      <p class="hint" style="margin-top:14px">Choose a mode and difficulty, then press Start. Press Enter to start quickly.</p>
+    </div>
+  </div>
+  <script>
+    const menuStart = document.getElementById('menuStart');
+    const menuMode = document.getElementById('menuMode');
+    const menuDifficulty = document.getElementById('menuDifficulty');
+    // restore last choices
+    const lastMode = localStorage.getItem('snakeMode') || 'classic';
+    const lastDiff = localStorage.getItem('snakeDifficulty') || 'normal';
+    if(menuMode) menuMode.value = lastMode;
+    if(menuDifficulty) menuDifficulty.value = lastDiff;
+    menuStart.addEventListener('click', ()=>{
+      const mode = menuMode.value;
+      const diff = menuDifficulty.value;
+      localStorage.setItem('snakeMode', mode);
+      localStorage.setItem('snakeDifficulty', diff);
+      localStorage.setItem('snakeSeenMenu','true');
+      // pass via query params for immediate application
+      const url = new URL(window.location.origin + window.location.pathname.replace(/menu.html$/, 'index.html'));
+      url.searchParams.set('mode', mode);
+      url.searchParams.set('difficulty', diff);
+      window.location.href = url.toString();
+    });
+    // allow Enter to start
+    document.addEventListener('keydown', (e)=>{ if(e.key === 'Enter') menuStart.click(); });
+    // Menu music + mute
+    const menuMute = document.getElementById('menuMute');
+    function setMuteUI(muted){
+      menuMute.setAttribute('aria-pressed', muted ? 'true' : 'false');
+      menuMute.textContent = muted ? '🔈' : '🔊';
+    }
+    let menuAudio = null;
+    const snakeMuted = localStorage.getItem('snakeMuted') === 'true';
+    setMuteUI(snakeMuted);
+
+    function startMenuMusic(){
+      if(menuAudio || localStorage.getItem('snakeMuted') === 'true') return;
+      menuAudio = new Audio('Tatyana_Kurtukova_-_Matushka_74861522.mp3');
+      menuAudio.loop = true;
+      menuAudio.volume = 0.12;
+      // attempt to play; may be blocked until user gesture
+      menuAudio.play().catch(()=>{});
+    }
+
+    function stopMenuMusic(){
+      if(menuAudio){ try{ menuAudio.pause(); menuAudio.currentTime = 0; }catch(e){} menuAudio = null; }
+    }
+
+    // start on first user gesture if not muted (autoplay restrictions)
+    function bootMusicOnGesture(){
+      if(localStorage.getItem('snakeMuted') === 'true') return;
+      startMenuMusic();
+      document.removeEventListener('pointerdown', bootMusicOnGesture);
+    }
+    document.addEventListener('pointerdown', bootMusicOnGesture);
+
+    // initialize (try start)
+    if(!snakeMuted){ try{ startMenuMusic(); }catch(e){} }
+
+    menuMute.addEventListener('click', ()=>{
+      const nowMuted = localStorage.getItem('snakeMuted') === 'true';
+      const newMuted = !nowMuted;
+      localStorage.setItem('snakeMuted', newMuted ? 'true' : 'false');
+      setMuteUI(newMuted);
+      if(newMuted) stopMenuMusic(); else startMenuMusic();
+    });
+
+    // stop music when leaving menu
+    menuStart.addEventListener('click', ()=>{ stopMenuMusic(); });
+  </script>
+</body>
+</html>
