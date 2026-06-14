@@ -1,6 +1,7 @@
 const gameCanvas = document.getElementById('gameCanvas');
 const ctx = gameCanvas.getContext('2d');
 const scoreEl = document.getElementById('score');
+const bestEl = document.getElementById('best');
 const startBtn = document.getElementById('startBtn');
 const pauseBtn = document.getElementById('pauseBtn');
 const restartBtn = document.getElementById('restartBtn');
@@ -9,6 +10,7 @@ let snake = [ {x:150,y:150}, {x:140,y:150}, {x:130,y:150}, {x:120,y:150}, {x:110
 let dx = 10; let dy = 0;
 let foodX = 0; let foodY = 0;
 let score = 0;
+let bestScore = parseInt(localStorage.getItem('snakeBest')) || 0;
 let changingDirection = false;
 let gameRunning = false;
 
@@ -35,7 +37,7 @@ function didGameEnd(){ for(let i=4;i<snake.length;i++){ if(snake[i].x===snake[0]
   return hitLeft || hitRight || hitTop || hitBottom;
 }
 
-function main(){ if(!gameRunning) return; if(didGameEnd()){ gameRunning = false; alert('Game over! Score: ' + score); return; }
+function main(){ if(!gameRunning) return; if(didGameEnd()){ gameRunning = false; updateBestIfNeeded(); alert('Game over! Score: ' + score + ' — Best: ' + bestScore); return; }
   setTimeout(function onTick(){ changingDirection = false; clearCanvas(); drawFood(); advanceSnake(); drawSnake(); main(); }, 100);
 }
 
@@ -49,3 +51,8 @@ pauseBtn.addEventListener('click', pauseGame);
 restartBtn.addEventListener('click', restartGame);
 
 clearCanvas(); drawSnake();
+
+// initialize best score display
+if(bestEl) bestEl.textContent = 'Best: ' + bestScore;
+
+function updateBestIfNeeded(){ if(score > bestScore){ bestScore = score; localStorage.setItem('snakeBest', bestScore); if(bestEl) bestEl.textContent = 'Best: ' + bestScore; } }
