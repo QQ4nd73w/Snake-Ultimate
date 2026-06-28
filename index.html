@@ -55,9 +55,9 @@
   </div>
   <script>
     try{
-      const seen = localStorage.getItem('snakeSeenMenu');
-      const isMenuPage = window.location.pathname.endsWith('menu.html') || window.location.pathname.endsWith('/menu.html');
-      if(!seen && !isMenuPage){ window.location.href = 'menu.html'; }
+      const params = new URLSearchParams(window.location.search);
+      const isGameLaunch = params.has('mode') || params.has('difficulty');
+      if(!isGameLaunch){ window.location.href = 'menu.html'; }
     }catch(e){}
   </script>
   <script src="js/state.js"></script>

@@ -64,7 +64,6 @@
       const diff = menuDifficulty.value;
       localStorage.setItem('snakeMode', mode);
       localStorage.setItem('snakeDifficulty', diff);
-      localStorage.setItem('snakeSeenMenu','true');
       const url = new URL(window.location.origin + window.location.pathname.replace(/menu.html$/, 'index.html'));
       url.searchParams.set('mode', mode);
       url.searchParams.set('difficulty', diff);

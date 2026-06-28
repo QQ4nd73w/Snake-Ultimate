@@ -5,10 +5,11 @@
 
   function redirectToMenuIfNeeded() {
     try {
-      var seen = localStorage.getItem('snakeSeenMenu');
       var isMenuPage = window.location.pathname.endsWith('menu.html') || window.location.pathname.endsWith('/menu.html');
+      var params = new URLSearchParams(window.location.search);
+      var isGameLaunch = params.has('mode') || params.has('difficulty');
 
-      if (!seen && !isMenuPage) {
+      if (!isMenuPage && !isGameLaunch) {
         window.location.href = 'menu.html';
       }
     } catch (error) {}
